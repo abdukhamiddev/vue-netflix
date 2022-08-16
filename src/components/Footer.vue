@@ -1,0 +1,56 @@
+<template>
+    <footer class="footer">
+        <div class="footer__icons">
+            <a href="#" class="footer__icon"><img src="@/assets/svg/facebook-icon.svg" alt="facebook-icon" /></a>
+            <a href="#" class="footer__icon"><img src="@/assets/svg/instagram-icon.svg" alt="instagram-icon" /></a>
+            <a href="#" class="footer__icon"><img src="@/assets/svg/twitter-icon.svg" alt="twitter-icon" /></a>
+            <a href="#" class="footer__icon"><img src="@/assets/svg/youtube-icon.svg" alt="youtube-icon" /></a>
+        </div>
+        <div class="footer__links">
+            <div class="footer__column">
+                <a class="footer__link" href="#">Audio and Subtitles</a>
+                <a class="footer__link" href="#">Media Center</a>
+                <a class="footer__link" href="#">Privacy</a>
+                <a class="footer__link" href="#">Contact Us</a>
+            </div>
+            <div class="footer__column">
+                <a class="footer__link" href="#">Audio Description</a>
+                <a class="footer__link" href="#">Investor Relations</a>
+                <a class="footer__link" href="#">Legal Notices</a>
+            </div>
+            <div class="footer__column">
+                <a class="footer__link" href="#">Help Center</a>
+                <a class="footer__link" href="#">Jobs</a>
+                <a class="footer__link" href="#">Cookie Preferences</a>
+            </div>
+            <div class="footer__column">
+                <a class="footer__link" href="#">Gift Cards</a>
+                <a class="footer__link" href="#">Term od Use</a>
+                <a class="footer__link" href="#">Corporate Information</a>
+            </div>
+        </div>
+        <div class="footer_service-code">
+            <button @click="changeText" class="footer__btn">
+                {{ btnText }}
+            </button>
+        </div>
+
+    </footer>
+</template>
+
+<script>
+import { ref } from '@vue/reactivity'
+export default {
+    setup() {
+        let btnText = ref('Service code')
+        function changeText() {
+            btnText.value = '345-986'
+        }
+
+        return { btnText, changeText }
+    }
+}
+</script>
+
+<style lang="scss" scoped>
+</style>
