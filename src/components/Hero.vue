@@ -10,7 +10,7 @@
                         <i class="fas fa-play hero__btn-icon"></i> Play
                     </button>
                     <button class="hero__btn hero__btn--info">
-                        <img src="@/assets/svg/info-icon.svg" alt="info-icon" /> More Info
+                        <img src="../assets/svg/info-icon.svg" alt="info-icon" /> More Info
                     </button>
                 </div>
             </div>

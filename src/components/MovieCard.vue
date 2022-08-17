@@ -38,7 +38,7 @@
 
 <script>
 import { ref } from "vue";
-import ModalComponent from "../components/Modal.vue";
+import ModalComponent from "./Modal.vue";
 
 export default {
     props: ["cardInfo"],

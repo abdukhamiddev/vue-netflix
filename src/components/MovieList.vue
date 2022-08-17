@@ -20,7 +20,7 @@
 
 <script>
 import { onMounted, ref } from 'vue';
-import MovieCardComponent from '../components/MovieCard.vue'
+import MovieCardComponent from './MovieCard.vue'
 
 export default {
     props: ["movie"],
@@ -35,7 +35,7 @@ export default {
 
         async function fetchMovies() {
             await fetch(
-                `https://api.themoviedb.org/3/discover/${props.movie.type}?api_key=${process.env.apikey}&with_genres=${props.movie.genreId}`
+                `https://api.themoviedb.org/3/discover/${props.movie.type}?api_key=${import.meta.env.VITE_API_KEY}&with_genres=${props.movie.genreId}`
             )
                 .then((response) => response.json())
                 .then((response) => {
@@ -53,7 +53,7 @@ export default {
         }
         async function appendInfo(value) {
             await fetch(
-                `https://api.themoviedb.org/3/${props.movie.type}/${value}?api_key=${process.env.apikey}&append_to_response=videos,credits,release_dates,similar`
+                `https://api.themoviedb.org/3/${props.movie.type}/${value}?api_key=${import.meta.env.VITE_API_KEY}&append_to_response=videos,credits,release_dates,similar`
             )
                 .then((response) => response.json())
                 .then((response) => {

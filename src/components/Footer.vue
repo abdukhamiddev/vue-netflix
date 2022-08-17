@@ -1,10 +1,10 @@
 <template>
     <footer class="footer">
         <div class="footer__icons">
-            <a href="#" class="footer__icon"><img src="@/assets/svg/facebook-icon.svg" alt="facebook-icon" /></a>
-            <a href="#" class="footer__icon"><img src="@/assets/svg/instagram-icon.svg" alt="instagram-icon" /></a>
-            <a href="#" class="footer__icon"><img src="@/assets/svg/twitter-icon.svg" alt="twitter-icon" /></a>
-            <a href="#" class="footer__icon"><img src="@/assets/svg/youtube-icon.svg" alt="youtube-icon" /></a>
+            <a href="#" class="footer__icon"><img src="../assets/svg/facebook-icon.svg" alt="facebook-icon" /></a>
+            <a href="#" class="footer__icon"><img src="../assets/svg/instagram-icon.svg" alt="instagram-icon" /></a>
+            <a href="#" class="footer__icon"><img src="../assets/svg/twitter-icon.svg" alt="twitter-icon" /></a>
+            <a href="#" class="footer__icon"><img src="../assets/svg/youtube-icon.svg" alt="youtube-icon" /></a>
         </div>
         <div class="footer__links">
             <div class="footer__column">
@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import { ref } from '@vue/reactivity'
+import { ref } from 'vue'
 export default {
     setup() {
         let btnText = ref('Service code')

@@ -1,15 +1,24 @@
-<script setup>
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
-
-</script>
-
 <template>
-  
-  
-  
+    <HeaderComponent />
+    <router-view :key="route.path" />
+    <FooterComponent />
+
 </template>
 
-<style scoped>
-
-</style>
+<script>
+import { useRoute } from "vue-router";
+import HeaderComponent from "./components/Header.vue";
+import FooterComponent from "./components/Footer.vue";
+export default {
+    components: {
+        HeaderComponent,
+        FooterComponent,
+    },
+    setup() {
+        const route = useRoute()
+        return {
+            route
+        };
+    },
+};
+</script>
