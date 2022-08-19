@@ -58,8 +58,21 @@ export default {
     margin: 0 auto;
     padding: 15px 40px;
 
+    @include mq("mobile", max) {
+        text-align: center;
+    }
+
     &__links {
         display: flex;
+
+        @include mq("small", max) {
+            width: 160px;
+        }
+
+        @include mq("mobile", max) {
+            margin: auto;
+        }
+
         flex-direction: row;
         justify-content: space-between;
         flex-wrap: wrap;
@@ -71,6 +84,44 @@ export default {
         flex-direction: column;
         color: $footer-link;
 
+
+        @include mq("tablet", max) {
+            width: 230px;
+        }
+
+        @include mq("small", max) {
+            width: 160px;
+        }
+
     }
+
+    &__link {
+        @include font-size(13);
+        color: $footer-link;
+        text-decoration: none;
+        margin-bottom: 5px;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    &__btn {
+        background: transparent;
+        color: $footer-link;
+        border: 1px solid $footer-link;
+        padding: 5px;
+        cursor: pointer;
+        margin-block: 15px;
+    }
+
+    &__copyright {
+        color: $footer-link;
+    }
+
+    &__icon {
+        margin-right: 20px;
+    }
+
 }
 </style>

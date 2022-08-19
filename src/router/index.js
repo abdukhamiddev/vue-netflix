@@ -1,37 +1,55 @@
 import { createRouter, createWebHistory } from "vue-router";
 
+import HomeComponent from "../views/home/Home.vue";
+import ShowsComponent from "../views/shows/Shows.vue";
+import MoviesComponent from "../views/movies/Movies.vue";
+import PopularComponent from "../views/popular/Popular.vue";
+import MyListComponent from "../views/mylist/MyList.vue";
+import SearchComponent from "../views/search/Search.vue";
+import VideoComponent from "../views/video/Video.vue";
 
 const routes = [
     {
         path: "/",
-        name: "home",
-        component: () => import("../views/home/Home.vue")
+        name: "Home",
+        component: HomeComponent,
     },
     {
         path: "/shows",
-        name: "shows",
-        component: () => import("../views/shows/Shows.vue")
+        name: "Shows",
+        component: ShowsComponent,
     },
     {
         path: "/movies",
-        name: "movies",
-        component: () => import("../views/movies/Movies.vue")
+        name: "Movies",
+        component: MoviesComponent,
     },
     {
         path: "/popular",
-        name: "popular",
-        component: () => import("../views/popular/Popular.vue")
+        name: "Popular",
+        component: PopularComponent,
     },
     {
         path: "/my-list",
-        name: "mylist",
-        component: () => import("../views/mylist/MyList.vue")
+        name: "MyList",
+        component: MyListComponent,
+    },
+    {
+        path: "/search",
+        name: "search",
+        component: SearchComponent,
+        props: (route) => ({ query: route.query.q }),
+    },
+    {
+        path: "/video/:id",
+        name: "video",
+        component: VideoComponent,
     },
 ];
 
 const router = createRouter({
+    history: createWebHistory(),
     routes,
-    history: createWebHistory()
 });
 
-export default router;
+export default router

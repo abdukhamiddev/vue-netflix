@@ -1,60 +1,97 @@
 <template>
     <div class="hero">
-        <video :src="heroVideo" typeof="video/mp4" class="hero__video"></video>
+        <img loading="lazy" class="hero__img" :src="`https://image.tmdb.org/t/p/original/${movieInfo.backdrop_path}`"
+            alt="" />
         <div class="hero__main">
-            <div class="hero__action">
-                <h1 class="hero__title">{{ heroInfo.title || heroInfo.name }}</h1>
-                <p class="hero__overview">{{ heroInfo.overview }}</p>
-                <div class="hero__btns">
-                    <button class="hero__btn hero__btn--play">
-                        <i class="fas fa-play hero__btn-icon"></i> Play
-                    </button>
-                    <button class="hero__btn hero__btn--info">
-                        <img src="../assets/svg/info-icon.svg" alt="info-icon" /> More Info
-                    </button>
-                </div>
+            <h1 class="hero__title">{{ movieInfo.title || movieInfo.name }}</h1>
+            <p class="hero__overview">{{ movieOverview }}</p>
+            <div class="hero__btns">
+                <button @click="watchMovie" class="hero__btn hero__btn--play">
+                    <i class="fas fa-play hero__btn-icon"></i> Play
+                </button>
+                <button @click="openModal" class="hero__btn hero__btn--info">
+                    <i class="fas fa-info-circle hero__btn-icon"></i> More Info
+                </button>
             </div>
-            <button class="hero__audio">
-                <i class="fas fa-volume-mute hero__audio-icon"></i>
-            </button>
         </div>
+        <ModalComponent @closeModal="closeModal" :cardInfo="movieInfo" v-if="isActive" />
     </div>
 </template>
 
 <script>
-import { computed } from 'vue'
+import ModalComponent from "./Modal.vue";
+import { useRouter } from "vue-router";
+import { computed, onMounted, ref } from "vue";
+
 export default {
-    props: ["heroInfo"],
+    props: ["heroParam"],
+    components: { ModalComponent },
     setup(props) {
-        let heroVideo = computed(() => {
-            if (!props.heroInfo) {
-                return ''
-            }
-            else {
-                if (props.heroInfo.title) {
-                    return `./src/assets/hero-videos/${props.heroInfo.title
-                        .toLowerCase()
-                        .replace(" ", "")}.mp4`;
-                } else {
-                    return `./src/assets/hero-videos/${props.heroInfo.name
-                        .toLowerCase()
-                        .replace(" ", "")}.mp4`;
-                }
-            }
-        })
-
-
-        return {
-            props,
-            heroVideo,
+        const router = useRouter();
+        let isActive = ref(false);
+        let movieInfo = ref("");
+        let randomMovie = ref("");
+        let movieOverview = computed(() => {
+            if (!randomMovie.value.overview) return "";
+            else return randomMovie.value.overview.split(".")[0] + ".";
+        });
+        function openModal() {
+            isActive.value = true;
         }
-    }
-}
+        function closeModal() {
+            isActive.value = false;
+        }
+        function watchMovie() {
+            router.push({
+                name: "video",
+                params: { id: movieInfo.value.external_ids.imdb_id },
+            });
+            window.scrollTo(0, 0);
+        }
+        async function fetchMovies() {
+            await fetch(
+                `https://api.themoviedb.org/3/${props.heroParam}?api_key=${import.meta.env.VITE_API_KEY}&include_adult=false`
+            )
+                .then((response) => response.json())
+                .then((response) => {
+                    randomMovie.value =
+                        response.results[
+                        Math.floor(Math.random() * response.results.length)
+                        ];
+                    appendInfo(randomMovie.value.id);
+                });
+        }
+        async function appendInfo(value) {
+            await fetch(
+                `https://api.themoviedb.org/3/${props.heroParam.split("/")[0]
+                }/${value}?api_key=${import.meta.env.VITE_API_KEY}&append_to_response=external_ids,videos,credits,release_dates,similar`
+            )
+                .then((response) => response.json())
+                .then((response) => {
+                    movieInfo.value = response;
+                });
+        }
+        onMounted(() => {
+            fetchMovies();
+        });
+        return {
+            isActive,
+            randomMovie,
+            movieInfo,
+            movieOverview,
+            openModal,
+            closeModal,
+            watchMovie,
+        };
+    },
+};
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .hero {
     position: relative;
+    display: flex;
+    flex-direction: column;
 
     &::before {
         content: "";
@@ -71,17 +108,16 @@ export default {
 
     &__main {
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         justify-content: space-between;
-        align-items: flex-end;
+        align-items: flex-start;
         width: 90%;
         position: absolute;
         bottom: 35%;
         margin-left: 5%;
-
     }
 
-    &__video {
+    &__img {
         width: 100%;
     }
 
@@ -94,12 +130,12 @@ export default {
         justify-content: center;
         align-items: center;
         gap: 15px;
-        background-color: $color-white;
+        background: $color-white;
         border: none;
         border-radius: 5px;
         padding: 8px 22px;
         margin-right: 15px;
-        @include font-size(16);
+        @include font-size(18);
         font-weight: 600;
         cursor: pointer;
 
@@ -108,20 +144,32 @@ export default {
             color: $color-white;
         }
 
-        @include mq('tablet', max) {
+        @include mq("tablet", max) {
             @include font-size(14);
             padding: 5px 15px;
+            gap: 10px;
         }
 
-        @include mq('small', max) {
-            @include font-size(10);
+        @include mq("small", max) {
+            @include font-size(8);
             padding: 3px 10px;
+            gap: 5px;
+            border-radius: 2px;
         }
     }
 
     &__title {
         color: $color-white;
 
+        @include mq("tablet", max) {
+            @include font-size(24);
+            margin: 0;
+            margin-bottom: 5px;
+        }
+
+        @include mq("mobile", max) {
+            @include font-size(16);
+        }
     }
 
     &__overview {
@@ -129,44 +177,8 @@ export default {
         max-width: 500px;
         @include font-size(18);
 
-        @include mq('mid-tablet', max) {
+        @include mq("mid-tablet", max) {
             display: none;
-        }
-    }
-
-    &__audio {
-        border: 1px solid $color-white;
-        background: transparent;
-        width: 45px;
-        height: 45px;
-        border-radius: 50%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        cursor: pointer;
-
-        @include mq('tablet', max) {
-            width: 35px;
-            height: 35px;
-        }
-
-        @include mq('small', max) {
-            width: 25px;
-            height: 25px;
-        }
-
-        &-icon {
-            color: $color-white;
-            @include font-size(18);
-
-            @include mq('tablet', max) {
-                @include font-size(14);
-            }
-
-            @include mq('small', max) {
-                @include font-size(10);
-            }
-
         }
     }
 }

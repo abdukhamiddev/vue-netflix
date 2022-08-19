@@ -1,41 +1,35 @@
 <template>
     <div class="carousel">
-        <h3 class="carousel__title">
-            {{ movie.title }}
-        </h3>
-        <button class="carousel__btn carousel__btn--left">
+        <h3 class="carousel__title">{{ movie.title }}</h3>
+        <button v-if="isActive" @click="prevSlide" class="carousel__btn carousel__btn--left">
             <i class="fas fa-chevron-right carousel__icon"></i>
         </button>
-        <div class="carousel__list">
-
-            <div class="carouse__item " :key="item.id" v-for="item in movies">
+        <div ref="slider" class="carousel__list">
+            <div class="carousel__item" :key="item.id" v-for="item in movies">
                 <MovieCardComponent :cardInfo="item" />
             </div>
         </div>
-        <button class="carousel__btn">
+        <button @click="nextSlide" class="carousel__btn">
             <i class="fas fa-chevron-right carousel__icon"></i>
         </button>
     </div>
 </template>
 
 <script>
-import { onMounted, ref } from 'vue';
-import MovieCardComponent from './MovieCard.vue'
+import MovieCardComponent from "./MovieCard.vue";
+import { onMounted, ref } from "vue";
 
 export default {
     props: ["movie"],
-    components: {
-        MovieCardComponent
-    },
+    components: { MovieCardComponent },
     setup(props) {
         let moviesId = ref([]);
         let movies = ref([]);
         let slider = ref("");
         let isActive = ref(false);
-
         async function fetchMovies() {
             await fetch(
-                `https://api.themoviedb.org/3/discover/${props.movie.type}?api_key=${import.meta.env.VITE_API_KEY}&with_genres=${props.movie.genreId}`
+                `https://api.themoviedb.org/3/discover/${props.movie.type}?api_key=${import.meta.env.VITE_API_KEY}&include_adult=false&with_genres=${props.movie.genreId}`
             )
                 .then((response) => response.json())
                 .then((response) => {
@@ -53,7 +47,7 @@ export default {
         }
         async function appendInfo(value) {
             await fetch(
-                `https://api.themoviedb.org/3/${props.movie.type}/${value}?api_key=${import.meta.env.VITE_API_KEY}&append_to_response=videos,credits,release_dates,similar`
+                `https://api.themoviedb.org/3/${props.movie.type}/${value}?api_key=${import.meta.env.VITE_API_KEY}&append_to_response=external_ids,videos,credits,release_dates,similar`
             )
                 .then((response) => response.json())
                 .then((response) => {
@@ -86,10 +80,98 @@ export default {
             nextSlide,
             prevSlide,
         };
-
-    }
-}
+    },
+};
 </script>
 
 <style lang="scss" scoped>
+.carousel {
+    position: relative;
+
+    &:hover {
+        .carousel__icon {
+            color: #fff;
+            transition: color 0.5s ease;
+        }
+    }
+
+    &__list {
+        display: flex;
+        flex-direction: row;
+        overflow: hidden;
+        scroll-behavior: smooth;
+        padding: 0 5%;
+    }
+
+    &__item {
+        padding-right: 4px;
+        max-width: calc(100% / 6);
+        min-width: calc(100% / 6);
+
+        @include mq("desktop", max) {
+            max-width: calc(100% / 5);
+            min-width: calc(100% / 5);
+        }
+
+        @include mq("mid-tablet", max) {
+            max-width: calc(100% / 4);
+            min-width: calc(100% / 4);
+        }
+
+        @include mq("tablet", max) {
+            max-width: calc(100% / 3);
+            min-width: calc(100% / 3);
+        }
+
+        @include mq("mobile", max) {
+            max-width: calc(100% / 2);
+            min-width: calc(100% / 2);
+        }
+    }
+
+    &__title {
+        color: $color-white;
+        padding-left: 5%;
+        margin-top: 0;
+        margin-bottom: -10px;
+
+        @include mq("tablet", max) {
+            @include font-size(14);
+        }
+
+        @include mq("tablet", max) {
+            @include font-size(12);
+        }
+    }
+
+    &__btn {
+        position: absolute;
+        bottom: 30%;
+        right: 0;
+        background: rgba(0, 0, 0, 0.5);
+        border: none;
+        height: calc(60% - 10px);
+        width: 5%;
+        cursor: pointer;
+        padding: 0;
+
+        &--left {
+            left: 0;
+            transform: rotate(180deg);
+        }
+
+        @include mq("tablet", max) {
+            height: calc(60% - 8px);
+        }
+    }
+
+    &__icon {
+        color: rgba(0, 0, 0, 0);
+        @include font-size(28);
+
+        @include mq("tablet", max) {
+            @include font-size(20);
+        }
+    }
+}
 </style>

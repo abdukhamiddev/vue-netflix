@@ -1,8 +1,8 @@
 <template>
     <header :class="[{ 'header--bg': isScrolled }, 'header']">
         <nav class="header__nav">
-            <router-link class="header__link header__link--logo" to="/">
-                <svg class="header__link-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 69.186">
+            <router-link @click="scrollTop" class="header__link header__link--logo" to="/"><svg
+                    class="header__link-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 69.186">
                     <path
                         d="M35.2 64.726c-3.85.676-7.77.88-11.823 1.42L11.013 29.93V67.7c-3.85.405-7.364.946-11.013 1.486V0h10.27l14.053 39.255V0H35.2v64.726zm21.283-39.39l14.46-.203v10.8l-14.46.203v16.08l19.12-1.15v10.404l-29.93 2.365V0h29.93v10.8h-19.12v14.526zm59.32-14.526H104.59v49.727l-10.8.135V10.81H82.564V0h33.24v10.81zm17.567 13.783h14.797v10.8H133.37V59.93h-10.608V0h30.202v10.8H133.37v13.783zm37.16 25.877c6.15.135 12.364.608 18.377.946V62.09l-29.187-1.42V0h10.8v50.47zm27.5 12.364c3.446.203 7.094.406 10.607.81V0H198.03v62.835zM256 0l-13.716 32.904L256 69.186c-4.054-.54-8.108-1.284-12.162-1.96l-7.77-19.998-7.904 18.378c-3.92-.676-7.703-.88-11.62-1.42l13.918-31.688L217.894 0h11.62l7.094 18.175L244.176 0H256z"
                         fill="#d81f26" />
@@ -10,35 +10,36 @@
             </router-link>
             <div class="header__navbar">
                 <div class="header__menu">
-                    <span class="header__browse">Browse </span>
+                    <span class="header__browse">Browse</span>
                     <div class="header__account-arrow"></div>
                 </div>
                 <div class="header__links">
-                    <router-link class="header__link" to="/">Home</router-link>
-                    <router-link class="header__link" to="/shows">TV Shows</router-link>
-                    <router-link class="header__link" to="/movies">Movies</router-link>
-                    <router-link class="header__link" to="/my-list">My List</router-link>
-                    <router-link class="header__link" to="/popular">New Popular</router-link>
+                    <router-link @click="scrollTop" class="header__link" to="/">Home</router-link>
+                    <router-link @click="scrollTop" class="header__link" to="/shows">TV Shows</router-link>
+                    <router-link @click="scrollTop" class="header__link" to="/movies">Movies</router-link>
+                    <router-link @click="scrollTop" class="header__link" to="/popular">New & Popular</router-link>
+                    <router-link @click="scrollTop" class="header__link" to="/my-list">My List</router-link>
                 </div>
             </div>
         </nav>
         <div class="header__settings">
             <div @click="getFocus" class="header__search">
-
-                <input type="text" ref="searchRef" id="textField" autocomplete="off" name="search" class="header__input"
-                    placeholder="Titles,people,genres">
+                <form @submit.prevent>
+                    <input v-model="search" ref="searchRef" id="textField" name="search" autocomplete="off"
+                        placeholder="Titles, people, genres" class="header__input" type="text" @keyup="goToSearch" />
+                </form>
                 <button class="header__search-btn">
-                    <i class="fas fa-search header__search-icon">
-                    </i>
+                    <i class="fas fa-search header__search-icon"></i>
                 </button>
             </div>
-            <div class="header_notifications">
+            <div class="header__notification">
                 <i class="fas fa-bell header__notification-icon"></i>
             </div>
             <div class="header__account">
                 <div class="header__account-menu">
-                    <img src="https://occ-0-2705-2706.1.nflxso.net/dnm/api/v6/K6hjPJd6cR6FpVELC5Pd6ovHRSk/AAAABUCZYfPbupvQjzSa3egePk8TFNDy2A_w15DEAq50IqW8MYmOtmbWwN4Txem7mgNYEMPJ1BY6uasiIJQ8JeFO3EU.png?r=b97"
-                        alt="" class="header__account-img">
+                    <img class="header__account-img"
+                        src="https://occ-0-2705-2706.1.nflxso.net/dnm/api/v6/K6hjPJd6cR6FpVELC5Pd6ovHRSk/AAAABUCZYfPbupvQjzSa3egePk8TFNDy2A_w15DEAq50IqW8MYmOtmbWwN4Txem7mgNYEMPJ1BY6uasiIJQ8JeFO3EU.png?r=b97"
+                        alt="" />
                     <div class="header__account-arrow"></div>
                 </div>
                 <div class="header__account-links">
@@ -51,34 +52,53 @@
             </div>
         </div>
     </header>
-
-
 </template>
 
 <script>
-import { ref } from 'vue'
-import { onMounted } from 'vue'
+import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
 export default {
     setup() {
-        const searchRef = ref('')
-        let isScrolled = ref(false)
+        const router = useRouter();
+        const searchRef = ref("");
+        let search = ref("");
+        let movies = ref([]);
+        let isScrolled = ref(false);
         function getFocus() {
-            searchRef.value.focus()
+            searchRef.value.focus();
         }
         function scroll() {
-            if (window.pageYOffset > 30) return (isScrolled.value = true);
-            else return (isScrolled.value = false);
+            window.pageYOffset > 30
+                ? (isScrolled.value = true)
+                : (isScrolled.value = false);
+        }
+        function goToSearch() {
+            if (search.value) {
+                router.replace({ path: "/search", query: { q: search.value } });
+            } else {
+                router.replace("/");
+            }
+        }
+        function scrollTop() {
+            window.scrollTo(0, 0);
         }
         onMounted(() => {
-            window.addEventListener('scroll', scroll)
-        })
-
-        return { searchRef, isScrolled, getFocus }
-    }
-}
+            window.addEventListener("scroll", scroll);
+        });
+        return {
+            searchRef,
+            isScrolled,
+            search,
+            movies,
+            getFocus,
+            goToSearch,
+            scrollTop,
+        };
+    },
+};
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .header {
     position: fixed;
     right: 0;
@@ -119,6 +139,10 @@ export default {
         @include font-size(16);
 
         @include mq("mid-tablet", max) {
+            @include font-size(16);
+        }
+
+        @include mq("tablet", max) {
             @include font-size(12);
         }
     }
@@ -143,13 +167,18 @@ export default {
         @include mq("mid-tablet", max) {
             display: none;
             position: absolute;
-            top: 61px;
-            left: 0;
+            top: 70px;
+            left: 50px;
             flex-direction: column;
             width: 250px;
             padding-top: 20px;
             border-top: 1px solid $color-white;
             background: rgba(0, 0, 0, 0.9);
+        }
+
+        @include mq("tablet", max) {
+            top: 61px;
+            left: -20px;
         }
     }
 
@@ -174,6 +203,10 @@ export default {
 
             @include mq("mid-tablet", max) {
                 margin-top: 20px;
+            }
+
+            @include mq("tablet", max) {
+                margin-top: 20px;
                 margin-right: 20px;
             }
         }
@@ -182,7 +215,7 @@ export default {
             width: 100px;
             height: 27px;
 
-            @include mq("mid-tablet", max) {
+            @include mq("tablet", max) {
                 width: 50px;
                 height: 14px;
             }
@@ -283,6 +316,7 @@ export default {
         &-img {
             border-radius: 5px;
             padding-block: 20px;
+            @include mq("tablet");
         }
 
         &:hover {

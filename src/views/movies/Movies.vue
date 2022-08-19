@@ -27,7 +27,7 @@ export default {
         let moviesHeroInfo = ref("");
         async function getHeroInfo() {
             await fetch(
-                `https://api.themoviedb.org/3/movie/508943?api_key=${import.meta.env.VITE_API_KEY}&append_to_response=videos,credits,release_dates,similar`
+                `https://api.themoviedb.org/3/movie/508943?api_key=${import.meta.env.VITE_API_KEY}&append_to_response=external_ids,videos,credits,release_dates,similar`
             )
                 .then((response) => response.json())
                 .then((response) => {
