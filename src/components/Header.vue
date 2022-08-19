@@ -1,5 +1,5 @@
 <template>
-    <header>
+    <header :class="[{ 'header--bg': isScrolled }, 'header']">
         <nav class="header__nav">
             <router-link class="header__link header__link--logo" to="/">
                 <svg class="header__link-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 69.186">
@@ -15,17 +15,17 @@
                 </div>
                 <div class="header__links">
                     <router-link class="header__link" to="/">Home</router-link>
-                    <router-link class="header__link" to="/">TV Shows</router-link>
-                    <router-link class="header__link" to="/">Movies</router-link>
-                    <router-link class="header__link" to="/">My List</router-link>
-                    <router-link class="header__link" to="/">New Popular</router-link>
+                    <router-link class="header__link" to="/shows">TV Shows</router-link>
+                    <router-link class="header__link" to="/movies">Movies</router-link>
+                    <router-link class="header__link" to="/my-list">My List</router-link>
+                    <router-link class="header__link" to="/popular">New Popular</router-link>
                 </div>
             </div>
         </nav>
         <div class="header__settings">
-            <div class="header__search">
+            <div @click="getFocus" class="header__search">
 
-                <input type="text" ref="searchRef" id="textField" autocomplete="off" name="search"
+                <input type="text" ref="searchRef" id="textField" autocomplete="off" name="search" class="header__input"
                     placeholder="Titles,people,genres">
                 <button class="header__search-btn">
                     <i class="fas fa-search header__search-icon">
@@ -79,4 +79,239 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.header {
+    position: fixed;
+    right: 0;
+    left: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding-inline: 5%;
+    z-index: z-index(mid);
+    background: linear-gradient(to bottom,
+            rgba(0, 0, 0, 0.7) 10%,
+            rgba(0, 0, 0, 0));
+
+    @include mq("mid-tablet", max) {
+        padding: 0 5%;
+    }
+
+    &--bg {
+        background: #121212;
+    }
+
+    &__menu {
+        display: none;
+        cursor: pointer;
+
+        @include mq("mid-tablet", max) {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+    }
+
+    &__browse {
+        color: $color-white;
+        padding-block: 20px;
+        @include font-size(16);
+
+        @include mq("mid-tablet", max) {
+            @include font-size(12);
+        }
+    }
+
+    &__nav {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+    }
+
+    &__navbar {
+        &:hover {
+            .header__links {
+                display: flex;
+            }
+        }
+    }
+
+    &__links {
+        @include mq("mid-tablet", max) {
+            display: none;
+            position: absolute;
+            top: 61px;
+            left: 0;
+            flex-direction: column;
+            width: 250px;
+            padding-top: 20px;
+            border-top: 1px solid $color-white;
+            background: rgba(0, 0, 0, 0.9);
+        }
+    }
+
+    &__link {
+        text-decoration: none;
+        color: $header-link;
+        margin-right: 15px;
+        @include font-size(14);
+
+        @include mq("mid-tablet", max) {
+            margin-right: 0;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        &:hover {
+            color: #cacaca;
+        }
+
+        &--logo {
+            margin-right: 50px;
+
+            @include mq("mid-tablet", max) {
+                margin-top: 20px;
+                margin-right: 20px;
+            }
+        }
+
+        &-icon {
+            width: 100px;
+            height: 27px;
+
+            @include mq("mid-tablet", max) {
+                width: 50px;
+                height: 14px;
+            }
+        }
+    }
+
+    &__settings {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 25px;
+    }
+
+    &__input {
+        display: none;
+        background: $color-black;
+        padding: 5px 30px;
+        border: 1px solid $color-white;
+        color: $color-white;
+        z-index: z-index(bot);
+    }
+
+    &__search {
+        position: relative;
+
+        &:focus-within {
+            .header__input {
+                display: block;
+            }
+
+            .header__search-btn {
+                position: absolute;
+                top: 0;
+            }
+        }
+
+        &-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            z-index: z-index(top);
+        }
+
+        &-icon {
+            color: $color-white;
+            @include font-size(18);
+            margin-left: 5px;
+        }
+    }
+
+    &__notification {
+        cursor: pointer;
+
+        &-icon {
+            color: $color-white;
+            @include font-size(20);
+        }
+    }
+
+    &__account {
+        position: relative;
+
+        &-links {
+            position: absolute;
+            right: 0;
+            padding: 15px 10px;
+            width: 170px;
+            display: none;
+            border-top: 1px solid $color-white;
+            background: rgba(0, 0, 0, 0.9);
+        }
+
+        &-line {
+            border: none;
+            border-top: 1px solid $header-link;
+        }
+
+        &-link {
+            display: block;
+            text-decoration: none;
+            color: $header-link;
+            @include font-size(14);
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+
+        &-menu {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+        }
+
+        &-img {
+            border-radius: 5px;
+            padding-block: 20px;
+        }
+
+        &:hover {
+            .header__account-links {
+                display: block;
+            }
+
+            .header__account-arrow {
+                transform: rotate(180deg);
+            }
+        }
+
+        &-arrow {
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 5px solid $color-white;
+            transition: transform 0.5s ease;
+        }
+    }
+}
+
+.router-link-exact-active {
+    color: $color-white;
+    font-weight: 600;
+
+    &:hover {
+        color: $color-white;
+    }
+}
 </style>

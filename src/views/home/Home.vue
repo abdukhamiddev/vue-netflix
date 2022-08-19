@@ -1,5 +1,8 @@
 <template>
     <HeroComponent :heroInfo='homeHeroInfo' />
+    <main class="main">
+        <MovieListComponent :key="index" :movie='item' v-for="(item, index) in listInfo" />
+    </main>
 </template>
 
 <script>
@@ -46,4 +49,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.main {
+    margin-top: -13%;
+}
 </style>

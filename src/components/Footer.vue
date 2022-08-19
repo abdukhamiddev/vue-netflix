@@ -25,7 +25,7 @@
             </div>
             <div class="footer__column">
                 <a class="footer__link" href="#">Gift Cards</a>
-                <a class="footer__link" href="#">Term od Use</a>
+                <a class="footer__link" href="#">Terms of Use</a>
                 <a class="footer__link" href="#">Corporate Information</a>
             </div>
         </div>
@@ -53,4 +53,24 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.footer {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 15px 40px;
+
+    &__links {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        margin-top: 10px;
+    }
+
+    &__column {
+        display: flex;
+        flex-direction: column;
+        color: $footer-link;
+
+    }
+}
 </style>
