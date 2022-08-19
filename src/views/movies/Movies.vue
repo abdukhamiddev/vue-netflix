@@ -1,5 +1,5 @@
 <template>
-    <HeroComponent :heroInfo="moviesHeroInfo" />
+    <HeroComponent :heroParam="moviesHeroParam" />
     <main class="main">
         <MovieListComponent :movie="item" :key="index" v-for="(item, index) in listInfo" />
     </main>
@@ -17,31 +17,21 @@ export default {
     },
     setup() {
         let listInfo = [
-            { type: "movie", title: "Science Fiction", genreId: 878 },
-            { type: "movie", title: "Western", genreId: 37 },
-            { type: "movie", title: "Horror", genreId: 27 },
-            { type: "movie", title: "Comedy", genreId: 35 },
-            { type: "movie", title: "Music", genreId: 10402 },
-            { type: "movie", title: "Action", genreId: 28 },
+            { type: "movie", title: "Trending Now", genreId: 28 },
+            { type: "tv", title: "Watch It Again", genreId: 10759 },
+            { type: "movie", title: "Recently Added", genreId: 10751 },
+            { type: "tv", title: "Popular Tv Shows", genreId: 16 },
+            { type: "movie", title: "Crime & Thrillers", genreId: 80 },
+            { type: "tv", title: "Top Rated", genreId: 35 },
         ];
         let moviesHeroInfo = ref("");
-        async function getHeroInfo() {
-            await fetch(
-                `https://api.themoviedb.org/3/movie/508943?api_key=${import.meta.env.VITE_API_KEY}&append_to_response=external_ids,videos,credits,release_dates,similar`
-            )
-                .then((response) => response.json())
-                .then((response) => {
-                    console.log(response);
-                    moviesHeroInfo.value = response;
-                });
-        }
-        onMounted(() => {
-            getHeroInfo();
-        });
+        let moviesHeroParam = "movie/popular";
         return {
             listInfo,
             moviesHeroInfo,
+            moviesHeroParam
         };
+
     },
 };
 </script>

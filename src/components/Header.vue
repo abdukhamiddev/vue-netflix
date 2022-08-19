@@ -1,5 +1,5 @@
 <template>
-    <header :class="[{ 'header--bg': isScrolled }, 'header']">
+    <header :class="[{ 'scroll': isScrolled }, 'header']">
         <nav class="header__nav">
             <router-link @click="scrollTop" class="header__link header__link--logo" to="/"><svg
                     class="header__link-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 69.186">
@@ -9,16 +9,20 @@
                 </svg>
             </router-link>
             <div class="header__navbar">
-                <div class="header__menu">
+                <div @click="showMenu(navref)" class="header__menu">
                     <span class="header__browse">Browse</span>
                     <div class="header__account-arrow"></div>
                 </div>
-                <div class="header__links">
-                    <router-link @click="scrollTop" class="header__link" to="/">Home</router-link>
-                    <router-link @click="scrollTop" class="header__link" to="/shows">TV Shows</router-link>
-                    <router-link @click="scrollTop" class="header__link" to="/movies">Movies</router-link>
-                    <router-link @click="scrollTop" class="header__link" to="/popular">New & Popular</router-link>
-                    <router-link @click="scrollTop" class="header__link" to="/my-list">My List</router-link>
+                <div class="header__links" ref="navRef">
+                    <router-link @click="scrollTop, showMenu(ref)" class="header__link" to="/">Home</router-link>
+                    <router-link @click="scrollTop, showMenu(ref)" class="header__link" to="/shows">TV Shows
+                    </router-link>
+                    <router-link @click="scrollTop, showMenu(ref)" class="header__link" to="/movies">Movies
+                    </router-link>
+                    <router-link @click="scrollTop, showMenu(ref)" class="header__link" to="/popular">New & Popular
+                    </router-link>
+                    <router-link @click="scrollTop, showMenu(ref)" class="header__link" to="/my-list">My List
+                    </router-link>
                 </div>
             </div>
         </nav>
@@ -33,16 +37,22 @@
                 </button>
             </div>
             <div class="header__notification">
-                <i class="fas fa-bell header__notification-icon"></i>
+                <i class="fas fa-bell header__notification-icon" @click="showMenu(notificationRef)"></i>
+                <div ref="notificationRef" class="header__notification-list">
+                    <ul>
+                        <li>Now available Part 2</li>
+                        <li>Now available Part 2</li>
+                    </ul>
+                </div>
             </div>
-            <div class="header__account">
+            <div class="header__account" @click="showMenu(accountRef)">
                 <div class="header__account-menu">
                     <img class="header__account-img"
                         src="https://occ-0-2705-2706.1.nflxso.net/dnm/api/v6/K6hjPJd6cR6FpVELC5Pd6ovHRSk/AAAABUCZYfPbupvQjzSa3egePk8TFNDy2A_w15DEAq50IqW8MYmOtmbWwN4Txem7mgNYEMPJ1BY6uasiIJQ8JeFO3EU.png?r=b97"
                         alt="" />
                     <div class="header__account-arrow"></div>
                 </div>
-                <div class="header__account-links">
+                <div class="header__account-links" ref="'accountRef">
                     <a href="#" class="header__account-link">Manage Profiles</a>
                     <hr class="header__account-line" />
                     <a href="#" class="header__account-link">Account</a>
@@ -61,6 +71,9 @@ export default {
     setup() {
         const router = useRouter();
         const searchRef = ref("");
+        const navRef = ref("");
+        const accountRef = ref("");
+        const notificationRef = ref("");
         let search = ref("");
         let movies = ref([]);
         let isScrolled = ref(false);
@@ -82,10 +95,18 @@ export default {
         function scrollTop() {
             window.scrollTo(0, 0);
         }
+        function showMenu(element) {
+            element.classList.toggle("show");
+        }
+
         onMounted(() => {
             window.addEventListener("scroll", scroll);
         });
         return {
+            navRef,
+            notificationRef,
+            accountRef,
+            showMenu,
             searchRef,
             isScrolled,
             search,
@@ -107,17 +128,17 @@ export default {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    padding-inline: 5%;
+    padding: 20px 5%;
     z-index: z-index(mid);
     background: linear-gradient(to bottom,
             rgba(0, 0, 0, 0.7) 10%,
             rgba(0, 0, 0, 0));
 
-    @include mq("mid-tablet", max) {
-        padding: 0 5%;
+    @include mq("tablet", max) {
+        padding-block: 10px;
     }
 
-    &--bg {
+    &.scroll {
         background: #121212;
     }
 
@@ -135,7 +156,6 @@ export default {
 
     &__browse {
         color: $color-white;
-        padding-block: 20px;
         @include font-size(16);
 
         @include mq("mid-tablet", max) {
@@ -155,30 +175,27 @@ export default {
         position: relative;
     }
 
-    &__navbar {
-        &:hover {
-            .header__links {
-                display: flex;
-            }
-        }
-    }
-
     &__links {
         @include mq("mid-tablet", max) {
-            display: none;
+            display: flex;
             position: absolute;
             top: 70px;
             left: 50px;
+            display: flex;
             flex-direction: column;
             width: 250px;
             padding-top: 20px;
             border-top: 1px solid $color-white;
             background: rgba(0, 0, 0, 0.9);
+
+            &.show {
+                display: none;
+            }
         }
 
         @include mq("tablet", max) {
-            top: 61px;
-            left: -20px;
+            top: 60px;
+            left: -35px;
         }
     }
 
@@ -199,14 +216,10 @@ export default {
         }
 
         &--logo {
+            margin: 0;
             margin-right: 50px;
 
-            @include mq("mid-tablet", max) {
-                margin-top: 20px;
-            }
-
             @include mq("tablet", max) {
-                margin-top: 20px;
                 margin-right: 20px;
             }
         }
@@ -222,6 +235,7 @@ export default {
         }
     }
 
+    // Right side of header
     &__settings {
         display: flex;
         flex-direction: row;
@@ -230,6 +244,7 @@ export default {
         gap: 25px;
     }
 
+    // Search input
     &__input {
         display: none;
         background: $color-black;
@@ -237,6 +252,11 @@ export default {
         border: 1px solid $color-white;
         color: $color-white;
         z-index: z-index(bot);
+
+        @include mq("small", max) {
+            margin-left: 10px;
+            width: 200px;
+        }
     }
 
     &__search {
@@ -250,6 +270,14 @@ export default {
             .header__search-btn {
                 position: absolute;
                 top: 0;
+
+                @include mq("tablet", max) {
+                    top: 3px;
+                }
+
+                @include mq("small", max) {
+                    left: 10px;
+                }
             }
         }
 
@@ -259,35 +287,63 @@ export default {
             cursor: pointer;
             padding: 0;
             z-index: z-index(top);
-        }
-
-        &-icon {
             color: $color-white;
             @include font-size(18);
             margin-left: 5px;
+
+            @include mq("tablet", max) {
+                @include font-size(14);
+            }
         }
     }
 
+    // Notification Button
     &__notification {
-        cursor: pointer;
+        position: relative;
+        color: $color-white;
 
         &-icon {
-            color: $color-white;
-            @include font-size(20);
+            cursor: pointer;
+            @include font-size(18);
+
+            @include mq("tablet", max) {
+                @include font-size(14);
+            }
+        }
+
+        &-list {
+            position: absolute;
+            display: none;
+            top: 60px;
+            right: 0;
+            padding: 15px 10px;
+            width: 170px;
+            border-top: 1px solid $color-white;
+            background: rgba(0, 0, 0, 0.9);
+
+            &.show {
+                display: block;
+            }
         }
     }
 
+    // Account Button
     &__account {
         position: relative;
 
         &-links {
             position: absolute;
+            display: none;
+            top: 60px;
             right: 0;
             padding: 15px 10px;
             width: 170px;
-            display: none;
             border-top: 1px solid $color-white;
             background: rgba(0, 0, 0, 0.9);
+
+            &.show {
+                display: block;
+            }
         }
 
         &-line {
@@ -307,6 +363,7 @@ export default {
         }
 
         &-menu {
+            cursor: pointer;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -315,17 +372,9 @@ export default {
 
         &-img {
             border-radius: 5px;
-            padding-block: 20px;
-            @include mq("tablet");
-        }
 
-        &:hover {
-            .header__account-links {
-                display: block;
-            }
-
-            .header__account-arrow {
-                transform: rotate(180deg);
+            @include mq("tablet", max) {
+                width: 25px;
             }
         }
 
@@ -335,7 +384,6 @@ export default {
             border-left: 5px solid transparent;
             border-right: 5px solid transparent;
             border-top: 5px solid $color-white;
-            transition: transform 0.5s ease;
         }
     }
 }

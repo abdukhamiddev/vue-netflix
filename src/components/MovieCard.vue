@@ -11,8 +11,11 @@
                     <button @click="watchMovie" class="card__btn card__btn--play">
                         <i class="fas fa-play card__icon card__icon--play"></i>
                     </button>
-                    <button @click="$emit('addToList', cardInfo)" class="card__btn">
+                    <button v-if="!cardInfo.isAdded" @click="addToList" class="card__btn">
                         <i class="fas fa-plus card__icon"></i>
+                    </button>
+                    <button v-else @click="$emit('removeFromList', cardInfo), remove()" class="card__btn">
+                        <i class="fas fa-check card__icon"></i>
                     </button>
                     <button class="card__btn">
                         <i class="far fa-thumbs-up card__icon"></i>
@@ -42,7 +45,7 @@ import { useRouter } from "vue-router";
 import ModalComponent from "./Modal.vue";
 export default {
     props: ["cardInfo"],
-    emits: ["addToList"],
+    emits: ["removeFromList"],
     components: { ModalComponent },
     setup(props) {
         let isActive = ref(false);
@@ -60,7 +63,17 @@ export default {
             });
             window.scrollTo(0, 0);
         }
+        function addToList() {
+            props.cardInfo.isAdded = true;
+            localStorage.setItem(props.cardInfo.id, JSON.stringify(props.cardInfo));
+        }
+        function remove() {
+            props.cardInfo.isAdded = false;
+            localStorage.removeItem(props.cardInfo.id);
+        }
         return {
+            addToList,
+            remove,
             isActive,
             openModal,
             closeModal,

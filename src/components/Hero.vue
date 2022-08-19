@@ -30,6 +30,7 @@ export default {
         const router = useRouter();
         let isActive = ref(false);
         let movieInfo = ref("");
+        let movies = ref([])
         let randomMovie = ref("");
         let movieOverview = computed(() => {
             if (!randomMovie.value.overview) return "";
@@ -54,10 +55,14 @@ export default {
             )
                 .then((response) => response.json())
                 .then((response) => {
+                    movies.value = response.results.filter(
+                        (el) => el.backdrop_path !== null
+                    );
                     randomMovie.value =
                         response.results[
                         Math.floor(Math.random() * response.results.length)
                         ];
+                    movies.value[Math.floor(Math.random() * movies.value.length)];
                     appendInfo(randomMovie.value.id);
                 });
         }
