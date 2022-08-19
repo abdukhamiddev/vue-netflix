@@ -76,11 +76,15 @@ export default {
             localStorage.removeItem(movieInfo.value.id);
         }
         function likeMovie() {
-            movieInfo.value.isLiked = true;
+            movieInfo.value.isLiked
+                ? (movieInfo.value.isLiked = null)
+                : (movieInfo.value.isLiked = true);
             localStorage.setItem(movieInfo.value.id, JSON.stringify(movieInfo.value));
         }
         function dislikeMovie() {
-            movieInfo.value.isLiked = false;
+            movieInfo.value.isLiked === false
+                ? (movieInfo.value.isLiked = null)
+                : (movieInfo.value.isLiked = false);
             localStorage.setItem(movieInfo.value.id, JSON.stringify(movieInfo.value));
         }
 
@@ -186,7 +190,8 @@ export default {
     }
 
     &__title {
-        color: $color-white;
+        margin: 0;
+        margin-bottom: 10px;
 
         @include mq("tablet", max) {
             @include font-size(24);
@@ -194,13 +199,14 @@ export default {
             margin-bottom: 5px;
         }
 
-        @include mq("mobile", max) {
+        @include mq("smal", max) {
             @include font-size(16);
+            line-height: 1.4;
         }
     }
 
     &__overview {
-        color: $color-white;
+        margin: 0 0 30px;
         max-width: 500px;
         @include font-size(18);
 
