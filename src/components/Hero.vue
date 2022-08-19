@@ -14,7 +14,8 @@
                 </button>
             </div>
         </div>
-        <ModalComponent @closeModal="closeModal" :cardInfo="movieInfo" v-if="isActive" />
+        <ModalComponent @closeModal="closeModal" :cardInfo="movieInfo" v-if="isActive" @addToList="addToList"
+            @removeMovie="removeMovie" />
     </div>
 </template>
 
@@ -66,6 +67,15 @@ export default {
                     appendInfo(randomMovie.value.id);
                 });
         }
+        function addToList() {
+            movieInfo.value.isAdded = true;
+            localStorage.setItem(movieInfo.value.id, JSON.stringify(movieInfo.value));
+        }
+        function removeMovie() {
+            movieInfo.value.isAdded = false;
+            localStorage.removeItem(movieInfo.value.id);
+        }
+
         async function appendInfo(value) {
             await fetch(
                 `https://api.themoviedb.org/3/${props.heroParam.split("/")[0]
@@ -87,6 +97,8 @@ export default {
             openModal,
             closeModal,
             watchMovie,
+            addToList,
+            removeMovie,
         };
     },
 };

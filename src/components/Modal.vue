@@ -13,8 +13,11 @@
                     <button @click="watchMovie" class="modal__btn modal__btn--play">
                         <i class="fas fa-play modal__icon modal__icon--play"></i> Play
                     </button>
-                    <button class="modal__btn">
+                    <button v-if="!cardInfo.isAdded" @click="$emit('addToList')" class="modal__btn">
                         <i class="fas fa-plus modal__icon"></i>
+                    </button>
+                    <button v-else @click="$emit('removeMovie'), $emit('removeFromArr', cardInfo)" class="modal__btn">
+                        <i class="fas fa-check modal__icon"></i>
                     </button>
                     <button class="modal__btn">
                         <i class="far fa-thumbs-up modal__icon"></i>
@@ -89,7 +92,7 @@ import { computed } from "vue";
 import { useRouter } from "vue-router";
 export default {
     props: ["cardInfo"],
-    emits: ["closeModal"],
+    emits: ["closeModal", "addToList", "removeMovie", "removeFromArr"],
     setup(props) {
         const router = useRouter();
         let related = computed(() => {

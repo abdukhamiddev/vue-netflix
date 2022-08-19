@@ -1,7 +1,9 @@
 <template>
     <div class="movies">
-        <div class="movies__card" :key="index" v-for="(item, index) in movies">
-            <MovieCardComponent :cardInfo="item" />
+        <div class="movies__content">
+            <div class="movies__card" :key="index" v-for="(item, index) in movies">
+                <MovieCardComponent :cardInfo="item" />
+            </div>
         </div>
     </div>
 </template>
@@ -42,6 +44,11 @@ export default {
             )
                 .then((response) => response.json())
                 .then((response) => {
+                    if (localStorage.getItem(response.id) === null) {
+                        response.isAdded = false;
+                    } else {
+                        response.isAdded = true;
+                    }
                     if (
                         response.videos.results.length > 0 &&
                         response.similar.results.length > 0
@@ -63,9 +70,13 @@ export default {
 <style lang="scss" scoped>
 .movies {
     padding: 80px 5% 0 5%;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
+    min-height: 100vh;
+
+    &__content {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+    }
 
     &__card {
         padding-right: 4px;
@@ -87,11 +98,5 @@ export default {
             width: calc(100% / 2);
         }
     }
-}
-
-h1 {
-    color: #fff;
-    margin: 0;
-    padding-top: 100px;
 }
 </style>

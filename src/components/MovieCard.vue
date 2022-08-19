@@ -14,13 +14,13 @@
                     <button v-if="!cardInfo.isAdded" @click="addToList" class="card__btn">
                         <i class="fas fa-plus card__icon"></i>
                     </button>
-                    <button v-else @click="$emit('removeFromList', cardInfo), remove()" class="card__btn">
+                    <button v-else @click="$emit('removeFromList', cardInfo), removeMovie()" class="card__btn">
                         <i class="fas fa-check card__icon"></i>
                     </button>
-                    <button class="card__btn">
+                    <button @click="likeMovie" :class="[{ act: cardInfo.isLiked }, 'card__btn']">
                         <i class="far fa-thumbs-up card__icon"></i>
                     </button>
-                    <button class="card__btn">
+                    <button @click="dislikeMovie" :class="[{ act: cardInfo.isLiked === false }, 'card__btn']">
                         <i class="far fa-thumbs-down card__icon"></i>
                     </button>
                 </div>
@@ -36,7 +36,8 @@
             </div>
         </div>
     </div>
-    <ModalComponent @closeModal="closeModal" :cardInfo="cardInfo" v-if="isActive" />
+    <ModalComponent @closeModal="closeModal" :cardInfo="cardInfo" v-if="isActive" @addToList="addToList"
+        @removeMovie="removeMovie" @watchMovie="watchMovie" v-bind="$attrs" />
 </template>
 
 <script>
@@ -67,13 +68,29 @@ export default {
             props.cardInfo.isAdded = true;
             localStorage.setItem(props.cardInfo.id, JSON.stringify(props.cardInfo));
         }
-        function remove() {
+        function removeMovie() {
             props.cardInfo.isAdded = false;
-            localStorage.removeItem(props.cardInfo.id);
+
+            if (
+                JSON.parse(localStorage.getItem(props.cardInfo.id)).isAdded === null
+            ) {
+                localStorage.removeItem(props.cardInfo.id);
+            }
+        }
+        function likeMovie() {
+            props.cardInfo.isLiked = true;
+            localStorage.setItem(props.cardInfo.id, JSON.stringify(props.cardInfo));
+        }
+        function dislikeMovie() {
+            props.cardInfo.isLiked = false;
+            localStorage.setItem(props.cardInfo.id, JSON.stringify(props.cardInfo));
         }
         return {
+            removeMovie,
+            likeMovie,
+            dislikeMovie,
             addToList,
-            remove,
+
             isActive,
             openModal,
             closeModal,
@@ -148,9 +165,15 @@ export default {
         height: 25px;
         border-radius: 50%;
         background: transparent;
+        color: $color-white;
         cursor: pointer;
         @include font-size(10);
         border: 1px solid $color-white;
+
+        &.act {
+            @include font-size(11);
+            border-width: 2px;
+        }
 
         &--play {
             background: $color-white;
@@ -171,7 +194,7 @@ export default {
     }
 
     &__icon {
-        color: $color-white;
+
 
         &--play {
             color: $color-background;

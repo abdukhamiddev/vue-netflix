@@ -1,5 +1,5 @@
 <template>
-    <header :class="[{ 'scroll': isScrolled }, 'header']">
+    <header :class="[{ scroll: isScrolled }, 'header']">
         <nav class="header__nav">
             <router-link @click="scrollTop" class="header__link header__link--logo" to="/"><svg
                     class="header__link-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 69.186">
@@ -9,19 +9,19 @@
                 </svg>
             </router-link>
             <div class="header__navbar">
-                <div @click="showMenu(navref)" class="header__menu">
+                <div @click="showMenu(navRef)" class="header__menu">
                     <span class="header__browse">Browse</span>
                     <div class="header__account-arrow"></div>
                 </div>
-                <div class="header__links" ref="navRef">
-                    <router-link @click="scrollTop, showMenu(ref)" class="header__link" to="/">Home</router-link>
-                    <router-link @click="scrollTop, showMenu(ref)" class="header__link" to="/shows">TV Shows
+                <div ref="navRef" class="header__links">
+                    <router-link @click="scrollTop(), showMenu(navRef)" class="header__link" to="/">Home</router-link>
+                    <router-link @click="scrollTop(), showMenu(navRef)" class="header__link" to="/shows">TV Shows
                     </router-link>
-                    <router-link @click="scrollTop, showMenu(ref)" class="header__link" to="/movies">Movies
+                    <router-link @click="scrollTop(), showMenu(navRef)" class="header__link" to="/movies">Movies
                     </router-link>
-                    <router-link @click="scrollTop, showMenu(ref)" class="header__link" to="/popular">New & Popular
+                    <router-link @click="scrollTop(), showMenu(navRef)" class="header__link" to="/popular">New & Popular
                     </router-link>
-                    <router-link @click="scrollTop, showMenu(ref)" class="header__link" to="/my-list">My List
+                    <router-link @click="scrollTop(), showMenu(navRef)" class="header__link" to="/my-list">My List
                     </router-link>
                 </div>
             </div>
@@ -37,22 +37,27 @@
                 </button>
             </div>
             <div class="header__notification">
-                <i class="fas fa-bell header__notification-icon" @click="showMenu(notificationRef)"></i>
+                <i @click="showMenu(notificationRef)" class="fas fa-bell header__notification-icon"></i>
                 <div ref="notificationRef" class="header__notification-list">
-                    <ul>
-                        <li>Now available Part 2</li>
-                        <li>Now available Part 2</li>
-                    </ul>
+                    <a class="header__notification-item" href="#"><img class="header__notification-img"
+                            src="../assets/notification-images/lupin.jpg" alt="lupin-poster" />
+                        <p>Now available Part 2.</p>
+                    </a>
+                    <hr class="header__notification-line" />
+                    <a class="header__notification-item" href="#"><img class="header__notification-img"
+                            src="../assets/notification-images/strangerthings.jpg" alt="stranger things-poster" />
+                        <p>Suggestion for tonight.</p>
+                    </a>
                 </div>
             </div>
-            <div class="header__account" @click="showMenu(accountRef)">
+            <div @click="showMenu(accountRef)" class="header__account">
                 <div class="header__account-menu">
                     <img class="header__account-img"
                         src="https://occ-0-2705-2706.1.nflxso.net/dnm/api/v6/K6hjPJd6cR6FpVELC5Pd6ovHRSk/AAAABUCZYfPbupvQjzSa3egePk8TFNDy2A_w15DEAq50IqW8MYmOtmbWwN4Txem7mgNYEMPJ1BY6uasiIJQ8JeFO3EU.png?r=b97"
                         alt="" />
                     <div class="header__account-arrow"></div>
                 </div>
-                <div class="header__account-links" ref="'accountRef">
+                <div ref="accountRef" class="header__account-links">
                     <a href="#" class="header__account-link">Manage Profiles</a>
                     <hr class="header__account-line" />
                     <a href="#" class="header__account-link">Account</a>
@@ -70,8 +75,8 @@ import { useRouter } from "vue-router";
 export default {
     setup() {
         const router = useRouter();
-        const searchRef = ref("");
         const navRef = ref("");
+        const searchRef = ref("");
         const accountRef = ref("");
         const notificationRef = ref("");
         let search = ref("");
@@ -98,22 +103,21 @@ export default {
         function showMenu(element) {
             element.classList.toggle("show");
         }
-
         onMounted(() => {
             window.addEventListener("scroll", scroll);
         });
         return {
             navRef,
-            notificationRef,
-            accountRef,
-            showMenu,
             searchRef,
+            accountRef,
+            notificationRef,
             isScrolled,
             search,
             movies,
             getFocus,
             goToSearch,
             scrollTop,
+            showMenu,
         };
     },
 };
@@ -177,25 +181,25 @@ export default {
 
     &__links {
         @include mq("mid-tablet", max) {
-            display: flex;
-            position: absolute;
-            top: 70px;
-            left: 50px;
-            display: flex;
-            flex-direction: column;
-            width: 250px;
-            padding-top: 20px;
-            border-top: 1px solid $color-white;
-            background: rgba(0, 0, 0, 0.9);
+            display: none;
 
             &.show {
-                display: none;
-            }
-        }
+                display: flex;
+                position: absolute;
+                top: 70px;
+                left: 50px;
+                display: flex;
+                flex-direction: column;
+                width: 250px;
+                padding-top: 20px;
+                border-top: 1px solid $color-white;
+                background: rgba(0, 0, 0, 0.9);
 
-        @include mq("tablet", max) {
-            top: 60px;
-            left: -35px;
+                @include mq("tablet", max) {
+                    top: 60px;
+                    left: -35px;
+                }
+            }
         }
     }
 
@@ -317,13 +321,28 @@ export default {
             top: 60px;
             right: 0;
             padding: 15px 10px;
-            width: 170px;
+            width: 250px;
             border-top: 1px solid $color-white;
             background: rgba(0, 0, 0, 0.9);
 
             &.show {
                 display: block;
             }
+        }
+
+        &-item {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: $color-white;
+            text-decoration: none;
+            gap: 10px;
+        }
+
+        &-img {
+            width: 90px;
+            height: 55px;
+            border-radius: 5px;
         }
     }
 
