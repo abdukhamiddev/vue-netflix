@@ -37,7 +37,8 @@
         </div>
     </div>
     <ModalComponent @closeModal="closeModal" :cardInfo="cardInfo" v-if="isActive" @addToList="addToList"
-        @removeMovie="removeMovie" @watchMovie="watchMovie" v-bind="$attrs" />
+        @removeMovie="removeMovie" @watchMovie="watchMovie" v-bind="$attrs" @likeMovie="likeMovie"
+        @dislikeMovie="dislikeMovie" />
 </template>
 
 <script>
@@ -71,9 +72,8 @@ export default {
         function removeMovie() {
             props.cardInfo.isAdded = false;
 
-            if (
-                JSON.parse(localStorage.getItem(props.cardInfo.id)).isAdded === null
-            ) {
+            localStorage.setItem(props.cardInfo.id, JSON.stringify(props.cardInfo));
+            if (props.cardInfo.isLiked === null) {
                 localStorage.removeItem(props.cardInfo.id);
             }
         }

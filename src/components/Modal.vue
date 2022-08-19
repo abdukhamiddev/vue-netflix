@@ -19,10 +19,10 @@
                     <button v-else @click="$emit('removeMovie'), $emit('removeFromArr', cardInfo)" class="modal__btn">
                         <i class="fas fa-check modal__icon"></i>
                     </button>
-                    <button class="modal__btn">
+                    <button @click="$emit('likeMovie')" :class="[{ act: cardInfo.isLiked }, 'modal__btn']">
                         <i class="far fa-thumbs-up modal__icon"></i>
                     </button>
-                    <button class="modal__btn">
+                    <button @click="$emit('dislikeMovie')" :class="[{ act: cardInfo.isLiked === false }, 'modal__btn']">
                         <i class="far fa-thumbs-down modal__icon"></i>
                     </button>
                 </div>
@@ -92,7 +92,14 @@ import { computed } from "vue";
 import { useRouter } from "vue-router";
 export default {
     props: ["cardInfo"],
-    emits: ["closeModal", "addToList", "removeMovie", "removeFromArr"],
+    emits: [
+        "closeModal",
+        "addToList",
+        "removeMovie",
+        "removeFromArr",
+        "likeMovie",
+        "dislikeMovie",
+    ],
     setup(props) {
         const router = useRouter();
         let related = computed(() => {
@@ -208,6 +215,11 @@ export default {
         cursor: pointer;
         border: 1px solid $color-white;
         @include font-size(16);
+
+        &.act {
+            @include font-size(17);
+            border-width: 2px;
+        }
 
         @include mq("tablet", max) {
             @include font-size(12);

@@ -15,7 +15,7 @@
             </div>
         </div>
         <ModalComponent @closeModal="closeModal" :cardInfo="movieInfo" v-if="isActive" @addToList="addToList"
-            @removeMovie="removeMovie" />
+            @removeMovie="removeMovie" @likeMovie="likeMovie" @dislikeMovie="dislikeMovie" />
     </div>
 </template>
 
@@ -75,6 +75,14 @@ export default {
             movieInfo.value.isAdded = false;
             localStorage.removeItem(movieInfo.value.id);
         }
+        function likeMovie() {
+            movieInfo.value.isLiked = true;
+            localStorage.setItem(movieInfo.value.id, JSON.stringify(movieInfo.value));
+        }
+        function dislikeMovie() {
+            movieInfo.value.isLiked = false;
+            localStorage.setItem(movieInfo.value.id, JSON.stringify(movieInfo.value));
+        }
 
         async function appendInfo(value) {
             await fetch(
@@ -99,6 +107,8 @@ export default {
             watchMovie,
             addToList,
             removeMovie,
+            likeMovie,
+            dislikeMovie,
         };
     },
 };
